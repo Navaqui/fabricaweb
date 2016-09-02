@@ -44,12 +44,22 @@ public class UsuarioController extends HttpServlet {
 			throws ServletException, IOException {
 		System.out.println("Requisição pelo método GET !");
 		Usuario usu = new Usuario();
-		usu.setNome(request.getParameter("nome"));
-		usu.setLogin(request.getParameter("login"));
-		usu.setSenha(request.getParameter("senha"));
 		UsuarioDAO usuDAO = new UsuarioDAO();
-		usuDAO.salvar(usu);
-		response.getWriter().print("Salvo comn sucesso!");
+
+		if (request.getParameter("acao") != null && !request.getParameter("acao").isEmpty()) {
+			if (request.getParameter("acao").equals("exec")) {
+				usu.setId(Integer.parseInt(request.getParameter("id")));
+				usuDAO.excluir(usu);
+				response.getWriter().print("Removido com sucesso!");
+			}
+		} else {
+			usu.setNome(request.getParameter("nome"));
+			usu.setLogin(request.getParameter("login"));
+			usu.setSenha(request.getParameter("senha"));
+			usuDAO.salvar(usu);
+			response.getWriter().print("Salvo com sucesso!");
+		}
+
 	}
 
 	/**
@@ -58,7 +68,16 @@ public class UsuarioController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		Usuario usu = new Usuario();
+		if (request.getParameter("id") != null && !request.getParameter("id").isEmpty()) {
+			usu.setId(Integer.parseInt(request.getParameter("id")));
+		}
+		usu.setNome(request.getParameter("nome"));
+		usu.setLogin(request.getParameter("login"));
+		usu.setSenha(request.getParameter("senha"));
+		UsuarioDAO usuDAO = new UsuarioDAO();
+		usuDAO.salvar(usu);
+		response.getWriter().print("Salvo comn sucesso!");
 		System.out.println("Requisição pelo método POST !");
 	}
 
